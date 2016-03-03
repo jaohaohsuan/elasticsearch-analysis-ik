@@ -5,20 +5,25 @@ import org.elasticsearch.common.inject.assistedinject.Assisted;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.Index;
-import org.elasticsearch.index.settings.IndexSettings;
+import org.elasticsearch.index.settings.IndexSettingsService;
 import org.wltea.analyzer.cfg.Configuration;
 import org.wltea.analyzer.dic.Dictionary;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
+@Deprecated
 public class IkAnalyzerProvider extends AbstractIndexAnalyzerProvider<IKAnalyzer> {
     private final IKAnalyzer analyzer;
+    private boolean useSmart=false;
 
     @Inject
-    public IkAnalyzerProvider(Index index, @IndexSettings Settings indexSettings, Environment env, @Assisted String name, @Assisted Settings settings) {
-        super(index, indexSettings, name, settings);
+    public IkAnalyzerProvider(Index index, IndexSettingsService indexSettingsService, Environment env, @Assisted String name, @Assisted Settings settings) {
+        super(index, indexSettingsService.getSettings(), name, settings);
         Dictionary.initial(new Configuration(env));
-        analyzer = new IKAnalyzer(settings, env);
+        useSmart = settings.get("use_smart", "false").equals("true");
+        analyzer=new IKAnalyzer(useSmart);
     }
 
-    public IKAnalyzer get() { return this.analyzer; }
+    @Override public IKAnalyzer get() {
+        return this.analyzer;
+    }
 }

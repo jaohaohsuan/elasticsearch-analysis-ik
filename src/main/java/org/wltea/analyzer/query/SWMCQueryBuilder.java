@@ -70,7 +70,7 @@ public class SWMCQueryBuilder {
 	private static List<Lexeme> doAnalyze(String keywords){
 		List<Lexeme> lexemes = new ArrayList<Lexeme>();
 
-		IKSegmenter ikSeg = new IKSegmenter(new StringReader(keywords));
+		IKSegmenter ikSeg = new IKSegmenter(new StringReader(keywords),true);
 		try{
 			Lexeme l;
 			while( (l = ikSeg.next()) != null){

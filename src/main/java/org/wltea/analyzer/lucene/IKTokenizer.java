@@ -34,14 +34,16 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
+
 import java.io.IOException;
+import java.io.Reader;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 
 /**
  * IK分词器 Lucene Tokenizer适配器类
  * 兼容Lucene 4.0版本
  */
-public class IKTokenizer extends Tokenizer {
+public final class IKTokenizer extends Tokenizer {
 	
 	//IK分词器实现
 	private IKSegmenter _IKImplement;
@@ -60,13 +62,18 @@ public class IKTokenizer extends Tokenizer {
    	private PositionIncrementAttribute posIncrAtt;
 
 
-	public IKTokenizer(Settings settings, Environment environment) {
-
-		offsetAtt = addAttribute(OffsetAttribute.class);
+    /**
+	 * Lucene 4.0 Tokenizer适配器类构造函数
+	 * @param in
+     */
+	public IKTokenizer(boolean useSmart){
+	    super();
+	    offsetAtt = addAttribute(OffsetAttribute.class);
 	    termAtt = addAttribute(CharTermAttribute.class);
 	    typeAtt = addAttribute(TypeAttribute.class);
         posIncrAtt = addAttribute(PositionIncrementAttribute.class);
-        _IKImplement = new IKSegmenter(input , settings, environment);
+
+        _IKImplement = new IKSegmenter(input,useSmart);
 	}
 
 	/* (non-Javadoc)
@@ -88,7 +95,6 @@ public class IKTokenizer extends Tokenizer {
 			//设置词元长度
 			termAtt.setLength(nextLexeme.getLength());
 			//设置词元位移
-//			offsetAtt.setOffset(nextLexeme.getBeginPosition(), nextLexeme.getEndPosition());
             offsetAtt.setOffset(correctOffset(nextLexeme.getBeginPosition()), correctOffset(nextLexeme.getEndPosition()));
 
             //记录分词的最后位置

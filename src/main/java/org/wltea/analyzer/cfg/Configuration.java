@@ -3,15 +3,20 @@
  */
 package org.wltea.analyzer.cfg;
 
+import org.elasticsearch.common.inject.Inject;
+import org.elasticsearch.common.io.PathUtils;
+import org.elasticsearch.common.logging.ESLogger;
+import org.elasticsearch.common.logging.Loggers;
+import org.elasticsearch.env.Environment;
+import org.elasticsearch.plugin.analysis.ik.AnalysisIkPlugin;
+
 import java.io.*;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Properties;
-
-import org.elasticsearch.common.logging.ESLogger;
-import org.elasticsearch.common.logging.Loggers;
-import org.elasticsearch.env.Environment;
 
 public class Configuration {
 
@@ -20,20 +25,22 @@ public class Configuration {
 	private static final String REMOTE_EXT_DICT = "remote_ext_dict";
 	private static final String EXT_STOP = "ext_stopwords";
 	private static final String REMOTE_EXT_STOP = "remote_ext_stopwords";
-    private static ESLogger logger = null;
+    private static ESLogger logger = Loggers.getLogger("ik-analyzer");
 	private Properties props;
     private Environment environment;
 
+	@Inject
     public  Configuration(Environment env){
-        logger = Loggers.getLogger("ik-analyzer");
 		props = new Properties();
         environment = env;
 
-        File fileConfig = new File(environment.configFile().resolve(FILE_NAME).toString());
+
+		Path fileConfig = PathUtils.get(getDictRoot(), FILE_NAME);
+
 
         InputStream input = null;
         try {
-            input = new FileInputStream(fileConfig);
+            input = new FileInputStream(fileConfig.toFile());
         } catch (FileNotFoundException e) {
             logger.error("ik-analyzer",e);
         }
@@ -41,9 +48,9 @@ public class Configuration {
 			try {
 				props.loadFromXML(input);
 			} catch (InvalidPropertiesFormatException e) {
-				e.printStackTrace();
+				logger.error("ik-analyzer", e);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("ik-analyzer",e);
 			}
 		}
 	}
@@ -57,7 +64,7 @@ public class Configuration {
 			if(filePaths != null){
 				for(String filePath : filePaths){
 					if(filePath != null && !"".equals(filePath.trim())){
-                        File file=new File("ik",filePath.trim());
+						Path file = PathUtils.get("ik", filePath.trim());
 						extDictFiles.add(file.toString());
 
 					}
@@ -94,7 +101,7 @@ public class Configuration {
 			if(filePaths != null){
 				for(String filePath : filePaths){
 					if(filePath != null && !"".equals(filePath.trim())){
-                        File file=new File("ik",filePath.trim());
+						Path file = PathUtils.get("ik", filePath.trim());
 						extStopWordDictFiles.add(file.toString());
 
 					}
@@ -118,11 +125,13 @@ public class Configuration {
 					}
 				}
 			}
-		}		
+		}
 		return remoteExtStopWordDictFiles;		
 	}
 
-    public File getDictRoot() {
-        return environment.configFile().toFile();
+    public String getDictRoot() {
+		return PathUtils.get(
+				new File(AnalysisIkPlugin.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(),"config")
+				.toAbsolutePath().toString();
     }
 }

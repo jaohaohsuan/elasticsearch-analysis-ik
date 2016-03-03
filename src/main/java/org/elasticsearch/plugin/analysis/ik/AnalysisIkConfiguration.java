@@ -31,7 +31,7 @@ public class AnalysisIkConfiguration extends AbstractComponent {
 
     private void Register(final String key, final Settings settings) {
         indicesAnalysisService.analyzerProviderFactories()
-                .put(key, new PreBuiltAnalyzerProviderFactory(key, AnalyzerScope.GLOBAL, new IKAnalyzer(settings, env)));
+                .put(key, new PreBuiltAnalyzerProviderFactory(key, AnalyzerScope.GLOBAL, new IKAnalyzer()));
 
         indicesAnalysisService.tokenizerFactories()
                 .put(key, new PreBuiltTokenizerFactoryFactory(new TokenizerFactory() {
@@ -41,7 +41,7 @@ public class AnalysisIkConfiguration extends AbstractComponent {
                     }
 
                     public Tokenizer create() {
-                        return new IKTokenizer(settings, env);
+                        return new IKTokenizer(settings.get("use_smart", "false").equals("true"));
                     }
                 }));
     }
