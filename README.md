@@ -234,7 +234,9 @@ mvn compile
 mvn package
 ```
 
-copy & unzip file  #{project_path}/elasticsearch-analysis-ik/target/releases/elasticsearch-analysis-ik-*.zip to your elasticsearch's folder: plugins/ik
+- copy & unzip file  #{project_path}/elasticsearch-analysis-ik/target/releases/elasticsearch-analysis-ik-*.zip to your elasticsearch's folder: plugins/ik
+
+- ./elasticsearch/bin/plugin install file:#{project_path}/elasticsearch-analysis-ik/target/releases/elasticsearch-analysis-ik-*.zip
 
 
 Thanks
