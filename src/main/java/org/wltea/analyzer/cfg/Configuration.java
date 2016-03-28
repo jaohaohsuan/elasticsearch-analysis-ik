@@ -131,7 +131,7 @@ public class Configuration {
 
     public String getDictRoot() {
 		return PathUtils.get(
-				new File(AnalysisIkPlugin.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(),"config")
+				new File(AnalysisIkPlugin.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(),"etc")
 				.toAbsolutePath().toString();
     }
 }

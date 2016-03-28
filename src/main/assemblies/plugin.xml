@@ -7,10 +7,9 @@
     <fileSets>
         <fileSet>
             <directory>${project.basedir}/config</directory>
-            <outputDirectory>/config</outputDirectory>
+            <outputDirectory>/etc/</outputDirectory>
         </fileSet>
     </fileSets>
-
     <files>
         <file>
             <source>${project.basedir}/src/main/resources/plugin-descriptor.properties</source>
