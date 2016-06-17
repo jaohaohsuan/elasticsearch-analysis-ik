@@ -11,21 +11,14 @@ Versions
 IK version | ES version
 -----------|-----------
 master | 2.3.1 -> master
-1.9.1 | 2.3.1
+1.9.3 | 2.3.3
 1.9.0 | 2.3.0
 1.8.1 | 2.2.1
 1.7.0 | 2.1.1
 1.5.0 | 2.0.0
-1.4.1 | 1.7.2
-1.4.0 | 1.6.0
-1.3.0 | 1.5.0
-1.2.9 | 1.4.0
-1.2.8 | 1.3.2
-1.2.7 | 1.2.1
 1.2.6 | 1.0.0
 1.2.5 | 0.90.x
 1.1.3 | 0.20.x
-1.1.2 | 0.19.x
 1.0.0 | 0.16.2 -> 0.19.0
 
 Install
@@ -176,7 +169,8 @@ Result
 
 ### Dictionary Configuration
 
-#### `plugins/elasticsearch-analysis-ik-*/config/ik/IKAnalyzer.cfg.xml`
+`IKAnalyzer.cfg.xml` can be located at `{conf}/analysis-ik/config/IKAnalyzer.cfg.xml`
+or `{plugins}/elasticsearch-analysis-ik-*/config/IKAnalyzer.cfg.xml`
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
